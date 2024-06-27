@@ -66,11 +66,12 @@ class ProtobufConverterImpl implements ProtobufConverter {
           rssi: message.rssi,
           connectable: _connectableFrom(message.isConnectable),
         ),
-        failure: genericFailureFrom(
-            hasFailure: message.hasFailure(),
-            getFailure: () => message.failure,
-            codes: ScanFailure.values,
-            fallback: (rawOrNull) => ScanFailure.unknown),
+        failure: scanFailureFrom(
+          hasFailure: message.hasFailure(),
+          getFailure: () => message.failure,
+          codes: ScanFailureCode.values,
+          fallback: (rawOrNull) => ScanFailureCode.unknown,
+        ),
       ),
     );
   }
@@ -189,6 +190,24 @@ class ProtobufConverterImpl implements ProtobufConverter {
             ? selectFrom(codes, index: error.code, fallback: fallback)
             : fallback(null),
         message: error.message,
+      );
+    }
+    return null;
+  }
+
+  @visibleForTesting
+  ScanFailure? scanFailureFrom({
+    required bool hasFailure,
+    required pb.ScanFailure Function() getFailure,
+    required List<ScanFailureCode> codes,
+    required ScanFailureCode Function(int? rawOrNull) fallback,
+  }) {
+    if (hasFailure) {
+      final error = getFailure();
+      return ScanFailure(
+        code: selectFrom(codes, index: error.code, fallback: fallback),
+        message: error.message,
+        retryDate: DateTime.fromMillisecondsSinceEpoch(error.retryDate.toInt()),
       );
     }
     return null;

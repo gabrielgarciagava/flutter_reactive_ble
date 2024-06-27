@@ -272,8 +272,8 @@ void main() {
         );
 
         expectedResult = WriteCharacteristicInfo(
-            characteristic: characteristic,
-            result: const Result.success(Unit()),
+          characteristic: characteristic,
+          result: const Result.success(Unit()),
         );
 
         when(_methodChannel.invokeMethod<List<int>?>(any, any)).thenAnswer(

@@ -3,7 +3,9 @@ package com.signify.hue.flutterreactiveble.converters
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattService
 import com.google.protobuf.ByteString
+import com.google.protobuf.Timestamp
 import com.polidea.rxandroidble2.RxBleDeviceServices
+import com.polidea.rxandroidble2.exceptions.BleScanException
 import com.signify.hue.flutterreactiveble.ble.ConnectionUpdateSuccess
 import com.signify.hue.flutterreactiveble.ble.MtuNegotiateFailed
 import com.signify.hue.flutterreactiveble.ble.MtuNegotiateResult
@@ -45,12 +47,23 @@ class ProtobufMessageConverter {
             .setManufacturerData(ByteString.copyFrom(scanInfo.manufacturerData))
             .build()
 
-    fun convertScanErrorInfo(errorMessage: String?): pb.DeviceScanInfo =
+    fun convertScanExceptionToDeviceScanInfo(exception: BleScanException): pb.DeviceScanInfo =
         pb.DeviceScanInfo.newBuilder()
             .setFailure(
-                pb.GenericFailure.newBuilder()
-                    .setCode(ScanErrorType.UNKNOWN.code)
-                    .setMessage(errorMessage ?: "")
+                pb.ScanFailure.newBuilder()
+                    .setCode(exception.reason)
+                    .setMessage(exception.message ?: "")
+                    .apply { exception.retryDateSuggestion?.let { setRetryDate(it.time) }  }
+                    .build(),
+            )
+            .build()
+
+    fun convertErrorMessageToDeviceScanInfo(errorMessage: String): pb.DeviceScanInfo =
+        pb.DeviceScanInfo.newBuilder()
+            .setFailure(
+                pb.ScanFailure.newBuilder()
+                    .setCode(BleScanException.UNKNOWN_ERROR_CODE)
+                    .setMessage(errorMessage)
                     .build(),
             )
             .build()

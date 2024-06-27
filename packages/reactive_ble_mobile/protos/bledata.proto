@@ -1,4 +1,5 @@
 syntax = "proto3";
+
 option java_package = "com.signify.hue.flutterreactiveble";
 option java_outer_classname = "ProtobufModel";
 
@@ -11,7 +12,7 @@ message ScanForDevicesRequest {
 message DeviceScanInfo {
     string id = 1;
     string name = 2;
-    GenericFailure failure = 3;
+    ScanFailure failure = 3;
     repeated ServiceDataEntry serviceData = 4;
     bytes manufacturerData = 6;
     repeated Uuid serviceUuids = 7;
@@ -161,6 +162,12 @@ message Uuid {
 message GenericFailure {
     int32 code = 1;
     string message = 2;
+}
+
+message ScanFailure {
+    int32 code = 1;
+    string message = 2;
+    uint64 retryDate = 3;
 }
 
 message IsConnectable {

@@ -9,10 +9,10 @@ part of 'discovered_device.dart';
 abstract class $ScanResult {
   const $ScanResult();
 
-  Result<DiscoveredDevice, GenericFailure<ScanFailure>?> get result;
+  Result<DiscoveredDevice, ScanFailure?> get result;
 
   ScanResult copyWith({
-    Result<DiscoveredDevice, GenericFailure<ScanFailure>?>? result,
+    Result<DiscoveredDevice, ScanFailure?>? result,
   }) =>
       ScanResult(
         result: result ?? this.result,
@@ -50,13 +50,13 @@ class ScanResult$Change {
     this.result,
   );
 
-  Result<DiscoveredDevice, GenericFailure<ScanFailure>?> result;
+  Result<DiscoveredDevice, ScanFailure?> result;
 }
 
 // ignore: avoid_classes_with_only_static_members
 class ScanResult$ {
   static final result =
-      Lens<ScanResult, Result<DiscoveredDevice, GenericFailure<ScanFailure>?>>(
+      Lens<ScanResult, Result<DiscoveredDevice, ScanFailure?>>(
     (resultContainer) => resultContainer.result,
     (resultContainer, result) => resultContainer.copyWith(result: result),
   );

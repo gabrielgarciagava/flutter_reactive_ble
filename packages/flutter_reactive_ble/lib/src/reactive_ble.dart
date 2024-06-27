@@ -421,8 +421,12 @@ class FlutterReactiveBle {
 
   Future<Characteristic> resolveSingle(QualifiedCharacteristic characteristic) async {
     final chars = await resolve(characteristic);
-    if (chars.isEmpty) throw Exception("Characteristic not found or discovered: $characteristic");
-    if (chars.length > 1) throw Exception("Multiple matching characteristics found: $characteristic");
+    if (chars.isEmpty) {
+      throw Exception("Characteristic not found or discovered: $characteristic");
+    }
+    if (chars.length > 1) {
+      throw Exception("Multiple matching characteristics found: $characteristic");
+    }
     return chars.single;
   }
 

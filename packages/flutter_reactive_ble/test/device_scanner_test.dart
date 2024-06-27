@@ -63,17 +63,13 @@ void main() {
         )).thenAnswer((_) => Stream.fromIterable([0]));
       });
 
-      group('When scan is sucesfull', () {
+      group('When scan is successful', () {
         setUp(() {
           final result1 = ScanResult(
-            result:
-                Result<DiscoveredDevice, GenericFailure<ScanFailure>>.success(
-                    _device1),
+            result: Result<DiscoveredDevice, ScanFailure>.success(_device1),
           );
           final result2 = ScanResult(
-            result:
-                Result<DiscoveredDevice, GenericFailure<ScanFailure>>.success(
-                    _device2),
+            result: Result<DiscoveredDevice, ScanFailure>.success(_device2),
           );
 
           when(_blePlatform.scanStream)
@@ -159,8 +155,10 @@ void main() {
       });
 
       group('When scan failed', () {
-        const failure =
-            GenericFailure(code: ScanFailure.unknown, message: 'Whoops');
+        const failure = ScanFailure(
+          code: ScanFailureCode.unknown,
+          message: 'Whoops',
+        );
         const resultFailure = ScanResult(result: Result.failure(failure));
 
         Stream<DiscoveredDevice>? scanStream;

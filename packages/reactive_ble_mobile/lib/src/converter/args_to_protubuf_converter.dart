@@ -16,16 +16,16 @@ abstract class ArgsToProtobufConverter {
   );
 
   pb.WriteCharacteristicRequest createWriteCharacteristicRequest(
-      CharacteristicInstance characteristic,
+    CharacteristicInstance characteristic,
     List<int> value,
   );
 
   pb.NotifyCharacteristicRequest createNotifyCharacteristicRequest(
-      CharacteristicInstance characteristic,
+    CharacteristicInstance characteristic,
   );
 
   pb.NotifyNoMoreCharacteristicRequest createNotifyNoMoreCharacteristicRequest(
-      CharacteristicInstance characteristic,
+    CharacteristicInstance characteristic,
   );
 
   pb.NegotiateMtuRequest createNegotiateMtuRequest(

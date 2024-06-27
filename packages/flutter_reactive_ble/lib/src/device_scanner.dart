@@ -32,8 +32,7 @@ class DeviceScannerImpl implements DeviceScanner {
   Stream<ScanResult> get _scanStream => _blePlatform.scanStream;
 
   final SerialDisposable<Repeater<DiscoveredDevice>> _scanStreamDisposable =
-      SerialDisposable(
-          (Repeater<DiscoveredDevice> repeater) => repeater.dispose());
+      SerialDisposable((Repeater<DiscoveredDevice> repeater) => repeater.dispose());
 
   @override
   ScanSession? get currentScan => _currentScanSession;
@@ -45,21 +44,23 @@ class DeviceScannerImpl implements DeviceScanner {
     bool requireLocationServicesEnabled = true,
   }) {
     final completer = Completer<void>();
-    _currentScanSession =
-        ScanSession(withServices: withServices, future: completer.future);
+    _currentScanSession = ScanSession(withServices: withServices, future: completer.future);
     // Make sure completing a future with an error does not lead to an unhandled exception.
     completer.future.catchError((Object e, StackTrace s) {});
 
     final scanRepeater = Repeater(
-      onListenEmitFrom: () =>
-          _scanStream.map((scan) => scan.result.dematerialize()).handleError(
+      onListenEmitFrom: () => _scanStream.map((scan) => scan.result.dematerialize()).handleError(
         (Object e, StackTrace s) {
           if (!completer.isCompleted) {
             completer.completeError(e, s);
+            print("BLE: Scan failed: $e");
+
             if (e is Exception) {
               throw e;
             } else if (e is Error) {
               throw e;
+            } else if (e is ScanFailure) {
+              throw ScanException(e);
             } else {
               throw Exception(e);
             }

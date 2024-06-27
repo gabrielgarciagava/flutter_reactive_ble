@@ -11,6 +11,7 @@ export './model/generic_failure.dart';
 export './model/log_level.dart';
 export './model/qualified_characteristic.dart';
 export './model/result.dart';
+export './model/scan_failure.dart';
 export './model/scan_mode.dart';
 export './model/scan_session.dart';
 export './model/unit.dart';

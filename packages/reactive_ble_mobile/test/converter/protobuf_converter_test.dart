@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:fixnum/fixnum.dart' show Int64;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:reactive_ble_mobile/src/converter/protobuf_converter.dart';
 import 'package:reactive_ble_mobile/src/generated/bledata.pb.dart' as pb;
@@ -108,9 +109,10 @@ void main() {
 
       group('given Scan fails', () {
         setUp(() {
-          final failure = pb.GenericFailure()
+          final failure = pb.ScanFailure()
             ..code = 0
-            ..message = "";
+            ..message = ""
+            ..retryDate = Int64(DateTime(2024).millisecondsSinceEpoch);
           final failedScan = pb.DeviceScanInfo()..failure = failure;
           scanresult = sut.scanResultFrom(failedScan.writeToBuffer());
         });
@@ -119,9 +121,13 @@ void main() {
             scanresult.result.iif(
               success: (d) =>
                   d.serviceData[Uuid(serviceDataEntry1.serviceUuid.data)],
-              failure: (_) => "Failed",
+              failure: (x) => x,
             ),
-            "Failed",
+            ScanFailure(
+              code: ScanFailureCode.throttled,
+              message: "",
+              retryDate: DateTime(2024),
+            ),
           );
         });
       });

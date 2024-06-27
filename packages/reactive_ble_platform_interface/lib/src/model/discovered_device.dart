@@ -14,7 +14,7 @@ part 'discovered_device.g.dart';
 @immutable
 @FunctionalData()
 class ScanResult extends $ScanResult {
-  final Result<DiscoveredDevice, GenericFailure<ScanFailure>?> result;
+  final Result<DiscoveredDevice, ScanFailure?> result;
 
   const ScanResult({required this.result});
 
@@ -69,9 +69,6 @@ enum ConnectionStatus {
   /// Device is being disconnected.
   disconnecting,
 }
-
-/// Failure type of device discovery.
-enum ScanFailure { unknown }
 
 /// Shows if the device is ready to be connected to from a discovery perspective
 enum Connectable { unknown, unavailable, available }

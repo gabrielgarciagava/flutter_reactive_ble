@@ -1,6 +1,7 @@
 package com.signify.hue.flutterreactiveble.channelhandlers
 
 import android.os.ParcelUuid
+import com.polidea.rxandroidble2.exceptions.BleScanException
 import com.signify.hue.flutterreactiveble.converters.ProtobufMessageConverter
 import com.signify.hue.flutterreactiveble.converters.UuidConverter
 import com.signify.hue.flutterreactiveble.model.ScanMode
@@ -46,11 +47,15 @@ class ScanDevicesHandler(
                             handleDeviceScanResult(converter.convertScanInfo(scanResult))
                         },
                         { throwable ->
-                            handleDeviceScanResult(converter.convertScanErrorInfo(throwable.message))
+                            if (throwable is BleScanException) {
+                                handleDeviceScanResult(converter.convertScanExceptionToDeviceScanInfo(throwable))
+                            } else {
+                                handleDeviceScanResult(converter.convertErrorMessageToDeviceScanInfo(throwable.message ?: "Unknown error"))
+                            }
                         },
                     )
         }
-            ?: handleDeviceScanResult(converter.convertScanErrorInfo("Scanning parameters are not set"))
+            ?: handleDeviceScanResult(converter.convertErrorMessageToDeviceScanInfo("Scanning parameters are not set"))
     }
 
     fun stopDeviceScan() {
